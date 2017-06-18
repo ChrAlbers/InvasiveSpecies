@@ -53,7 +53,7 @@ idg_horflip = True
 target_size = (224, 224)
 num_versions = 3 # How many versions of each picture to generate
 input_shape = target_size + (3, )
-test_num_images = 400 # Do set to large value to process all images
+test_num_images = 40000 # Do set to large value to process all images
 
 # Fraction of data for validation
 val_fraction = 0.5
@@ -194,22 +194,3 @@ np.save(open('bottleneck_features_train_labels.npy', 'wb'), generator_for_bottle
 np.save(open('bottleneck_features_val.npy', 'wb'), bottleneck_val)
 np.save(open('bottleneck_features_val_labels.npy', 'wb'), generator_for_bottleneck_val.classes)
 
-train_data = bottleneck_train
-train_labels = generator_for_bottleneck_train.classes
-val_data = bottleneck_val
-val_labels = generator_for_bottleneck_val.classes
-
-
-top_model = Sequential()
-top_model.add(Flatten(input_shape = bottleneck_train.shape[1:]))
-top_model.add(Dense(256, activation = "relu"))
-top_model.add(Dropout(0.5))
-top_model.add(Dense(1, activation = "sigmoid"))
-
-top_model.compile(optimizer = "rmsprop", loss = "binary_crossentropy",
-                  metrix = ["accuracy"])
-
-top_model.fit(train_data, train_labels,
-              epochs = 50,
-              batch_size = 20,
-              validation_data = (val_data, val_labels))
